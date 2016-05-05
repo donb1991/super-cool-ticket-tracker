@@ -1,0 +1,14 @@
+{
+  "name": "super-cool-ticket-tracker",
+  "version": "1.0.0",
+  "description": "A super cool ticket tracker to make my life easier",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron-prebuilt": "^0.37.8"
+  }
+}
