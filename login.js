@@ -26,32 +26,8 @@ function userAuthentication() {
 
   userAuth.currentUser = function() {
     let authData = ref.getAuth();
-    console.log(authData);
+    return auth.uid;
   }
 
   return userAuth;
 }
-
-(function() {
-
-  let userAuth = userAuthentication();
-  let form = $('#loginForm');
-
-  form.on('submit', function(event) {
-    event.preventDefault();
-    let userObj = {
-      email: $("#email").val(),
-      password: $("#password").val()
-    };
-
-    userAuth.currentUser();
-    userAuth.login(userObj).then(function(data){
-      // console.log(data);
-    }, function(err) {
-      console.log("failed");
-    });
-
-    userAuth.currentUser();
-  });
-
-})();
