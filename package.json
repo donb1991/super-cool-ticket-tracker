@@ -10,5 +10,8 @@
   "license": "ISC",
   "devDependencies": {
     "electron-prebuilt": "^0.37.8"
+  },
+  "dependencies": {
+    "jquery": "^2.2.3"
   }
 }
