@@ -4,14 +4,21 @@
   "description": "A super cool ticket tracker to make my life easier",
   "main": "main.js",
   "scripts": {
-    "start": "electron main.js"
+    "start": "electron main.js",
+    "watch": "browserify app/app.js -t babelify -o public/bundle.js --debug --verbose"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "browserify": "^13.0.1",
     "electron-prebuilt": "^0.37.8"
   },
   "dependencies": {
-    "jquery": "^2.2.3"
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.5.0",
+    "babelify": "^7.3.0",
+    "jquery": "^2.2.3",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0"
   }
 }
