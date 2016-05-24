@@ -28,6 +28,32 @@ function fireBaseMethods() {
       ref.unauth();
     },
 
+    getTicket: function(ticketNumber) {
+      let deferred = $.Deferred();
+      let ticketRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user + '/' + ticketNumber);
+
+      ticketRef.once('value', function(dataSnapshot) {
+        dererred.resolve(dataSnapshot);
+      }, function(err) {
+        dererred.reject(err);
+      });
+
+      return deferred;
+    },
+
+    getUserTickets: function(userId) {
+      let deferred = $.Deferred();
+      let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + userId);
+
+      userRef.once('value', function(dataSnapshot) {
+        deferred.resolve(dataSnapshot);
+      }, function(err) {
+        deferred.reject(err);
+      });
+
+      return deferred;
+    },
+
     updateTicket: function(ticketNumber, ticketInfo) {
       let user = this.currentUser();
       if(!user) {
@@ -39,7 +65,7 @@ function fireBaseMethods() {
 
     updateTimeSegment: function(ticketNumber, timeSegment) {
       let user = this.currentUser();
-      let ticketRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user + ticketNumber);
+      let ticketRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user + '/' + ticketNumber);
       if(!user) {
         throw("Must be logged in to make changes to a ticket");
       }
