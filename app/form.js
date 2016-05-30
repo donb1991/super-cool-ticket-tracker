@@ -1,6 +1,15 @@
 import React  from 'react';
+import fireBaseMethods from '../fireBaseMethods.js';
 
-class TicketForm extends React.Component {
+let TicketForm = React.createClass({
+
+    componentDidMount() {
+        let currentUser = fireBaseMethods.currentUser()
+
+        if(!currentUser) {
+          // document.location.hash = '#/';  
+        }
+    },
 
     render() {
         return (
@@ -36,6 +45,6 @@ class TicketForm extends React.Component {
           </form>
         );
     }
-}
+});
 
 export default TicketForm;

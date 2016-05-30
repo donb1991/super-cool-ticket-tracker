@@ -1,6 +1,15 @@
 import React from 'react';
+import fireBaseMethods from '../fireBaseMethods.js';
 
-class TicketList extends React.Component {
+let Tickets = React.createClass({
+
+  componentDidMount() {
+    let currentUser = fireBaseMethods.currentUser()
+
+    if(!currentUser) {
+      // document.location.hash = '#/';  
+    }
+  },
 
   render() {
     return (
@@ -68,6 +77,6 @@ class TicketList extends React.Component {
       </div>
     );
   }
-}
+});
 
-export default TicketList;
+export default Tickets;

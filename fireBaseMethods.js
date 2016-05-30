@@ -7,11 +7,15 @@ function fireBaseMethods() {
   let fireBaseObject = {
     currentUser: function() {
       let authData = ref.getAuth();
-      return authData.uid;
+      if(authData) {
+        return authData.uid;
+      }
+      return null;
     },
 
     login: function(userObj) {
       let deferred = $.Deferred();
+
       ref.authWithPassword(userObj, function(err, user) {
         if(err) {
           deferred.reject(err);
@@ -89,3 +93,5 @@ function fireBaseMethods() {
 
   return fireBaseObject;
 }
+
+module.exports = fireBaseMethods();
