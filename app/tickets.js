@@ -4,11 +4,15 @@ import fireBaseMethods from '../fireBaseMethods.js';
 let Tickets = React.createClass({
 
   componentDidMount() {
-    let currentUser = fireBaseMethods.currentUser()
+    let currentUser = fireBaseMethods.currentUser();
 
     if(!currentUser) {
-      // document.location.hash = '#/';  
+      // document.location.hash = '#/';
     }
+  },
+
+  handleClick(e) {
+    this.props.updateLocation('users/1/tickets/new', 'tickets');
   },
 
   render() {
@@ -17,7 +21,7 @@ let Tickets = React.createClass({
         <div className="form-group">
           <form>
             <label>Search<br /><input type="text" name="search" className="form-control"/></label><br />
-            <input type="button" className="btn btn-primary form-control" value="New Ticket" />
+            <input type="button" className="btn btn-primary form-control" value="New Ticket" onClick={this.handleClick}/>
             <hr />
           </form>
         </div>

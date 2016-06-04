@@ -32,16 +32,15 @@ function fireBaseMethods() {
       ref.unauth();
     },
 
-    getTicket: function(ticketNumber) {
+    getTicket: function(user, ticketNumber) {
       let deferred = $.Deferred();
       let ticketRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user + '/' + ticketNumber);
 
       ticketRef.once('value', function(dataSnapshot) {
-        dererred.resolve(dataSnapshot);
+        deferred.resolve(dataSnapshot.val());
       }, function(err) {
-        dererred.reject(err);
+        deferred.reject(err);
       });
-
       return deferred;
     },
 
@@ -50,7 +49,7 @@ function fireBaseMethods() {
       let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + userId);
 
       userRef.once('value', function(dataSnapshot) {
-        deferred.resolve(dataSnapshot);
+        deferred.resolve(dataSnapshot.val());
       }, function(err) {
         deferred.reject(err);
       });
