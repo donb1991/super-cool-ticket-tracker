@@ -32,7 +32,6 @@ let App = React.createClass({
 
   login(userInfo) {
     fireBaseMethods.login(userInfo).then((user) => {
-      console.log(user);
       this.setState({user: user.uid});
       this.updateLocation("#/users/" + user, 'currentUser');
     }, function(err) {
@@ -55,7 +54,7 @@ let App = React.createClass({
           <li className={this.state.location === "ticket" ? "active" : ""}><a href={"#/users/" + this.state.user + "/tickets/new"}>New Ticket</a></li>
           <li><a onClick={this.logout}>Log Out</a></li>
         </ul>);
-    } else {  
+    } else {
       navOptions = (
         <ul className="nav navbar-nav">
           <li className={this.state.location === "login" ? "active" : ""}><a href="#/login" >Login</a></li>
@@ -73,7 +72,7 @@ let App = React.createClass({
 
     return (
       <div>
-        <nav className="navbar navbar-default"> 
+        <nav className="navbar navbar-default">
           <div className="container-fluid">
             <div className="navbar-header">
               <span className="navbar-brand">Ticket Tracker</span>
