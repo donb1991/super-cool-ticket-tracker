@@ -5,13 +5,14 @@ let TicketForm = React.createClass({
     getInitialState() {
       let ticket = {};
       ticket.ticketNumber = "";
-      ticket.ticketTitle = "" ;
-      ticket.ticketNotes = "";
-      ticket.ticketTask = "";
+      ticket.title = "" ;
+      ticket.notes = "";
+      ticket.task = "";
       ticket.cmFeedback = false;
       ticket.previewLink = false;
       ticket.activated = false;
       ticket.liveLink = false;
+      ticket.caching = false;
       ticket.closed = false;
       ticket.createdAt = Date.now();
       return {ticket: ticket};
@@ -46,12 +47,12 @@ let TicketForm = React.createClass({
           <div className="form-group">
             <label for="ticketNumber" > Ticket # </label>
             <input type="text" id="ticketNumber"  placeholder="RITM #" className="form-control" value={this.state.ticket.ticketNumber} onChange={this.handleChange}/>
-            <label for="ticketTitle">Title</label>
-            <input type="text" id="ticketTitle" className="form-control" name="ticketTitle" placeholder="Title" value={this.state.ticket.ticketTitle} onChange={this.handleChange}/>
-            <label for="ticketNotes">Notes</label>
-            <textarea id="ticketNotes" rows="10" name="ticketNotes" className="form-control" value={this.state.ticket.ticketNotes} onChange={this.handleChange}></textarea>
-            <label for="ticketTask">Task</label>
-            <select id="ticketTask" className="form-control" value={this.state.ticket.ticketTask} onChange={this.handleChange}>
+            <label for="title">Title</label>
+            <input type="text" id="title" className="form-control" name="title" placeholder="Title" value={this.state.ticket.title} onChange={this.handleChange}/>
+            <label for="notes">Notes</label>
+            <textarea id="notes" rows="10" name="notes" className="form-control" value={this.state.ticket.notes} onChange={this.handleChange}></textarea>
+            <label for="task">Task</label>
+            <select id="task" className="form-control" value={this.state.ticket.task} onChange={this.handleChange}>
               <option value="task2">Task 2</option>
               <option value="task3">Task 3</option>
               <option value="task4">Task 4</option>

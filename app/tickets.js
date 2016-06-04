@@ -7,7 +7,7 @@ let Tickets = React.createClass({
     let currentUser = fireBaseMethods.currentUser();
 
     if(!currentUser) {
-      // document.location.hash = '#/';
+      document.location.hash = '#/login';
     }
     fireBaseMethods.getUserTickets(currentUser).then((data) => {
       let newState = {};
@@ -15,14 +15,21 @@ let Tickets = React.createClass({
       newState.waitingForCMFeedback = [];
       newState.inQA = [];
       newState.closed = [];
+      newState.activated = [];
+      newState.previewLink = []
       for(let ticket in data) {
         if(data[ticket].closed) {
           newState.closed.push(data[ticket]);
-        } else if(data[ticket].ticketTask == "task3"){
+        } else if(data[ticket].task == "task3"){
           newState.inQA.push(data[ticket]);
         } else if(data[ticket].cmFeedback) {
           newState.waitingForCMFeedback.push(data[ticket]);
-        } else {
+        } else if(data[ticket].activated) {
+          newState.activated.push(data[ticket]);
+        } else if(data[ticket].previewLink) {
+          newState.previewLink.push(data[ticket]);
+        }
+        else {
           newState.inProduction.push(data[ticket]);
         }
       }
@@ -34,6 +41,18 @@ let Tickets = React.createClass({
     this.props.updateLocation('users/1/tickets/new', 'tickets');
   },
 
+  createli(tickets) {
+    let newli = "";
+    if(tickets) {
+      newli = tickets.map((ticket, index) => {
+        return <li key={index}>
+          <p>{ticket.ticketNumber}</p>
+          <p>&emsp;{ticket.title}</p>
+        </li>
+      });
+    }
+    return newli;
+  },
   render() {
     let production = "";
     let cmFeedback = "";
@@ -42,31 +61,14 @@ let Tickets = React.createClass({
     let previewLinkSent = "";
     let activated = "";
     if(this.state) {
-      production = this.state.tickets.inProduction.map((ticket, index) => {
-        return <li key={index}>
-          <p>{ticket.ticketNumber}</p>
-          <p>&emsp;{ticket.ticketTitle}</p>
-        </li>
-      });
-      cmFeedback = this.state.tickets.waitingForCMFeedback.map((ticket, index) => {
-        return <li key={index}>
-          <p>{ticket.ticketNumber}</p>
-          <p>&emsp;{ticket.ticketTitle}</p>
-        </li>
-      });
-      inQA = this.state.tickets.inQA.map((ticket, index) => {
-        return <li key={index}>
-          <p>{ticket.ticketNumber}</p>
-          <p>&emsp;{ticket.ticketTitle}</p>
-        </li>
-      });
-      closed = this.state.tickets.closed.map((ticket, index) => {
-        return <li key={index}>
-          <p>{ticket.ticketNumber}</p>
-          <p>&emsp;{ticket.ticketTitle}</p>
-        </li>
-      });
+      production = this.createli(this.state.tickets.inProduction);
+      cmFeedback = this.createli(this.state.tickets.waitingForCMFeedback);
+      inQA = this.createli(inQA);
+      closed = this.createli(this.state.tickets.closed);
+      activated = this.createli(this.state.tickets.closed);
+      previewLinkSent = this.createli(this.state.tickets.closed);
     }
+
     return (
       <div>
         <div className="form-group">
@@ -89,6 +91,18 @@ let Tickets = React.createClass({
         <h4>Production</h4>
         <ul>
           {production}
+        </ul>
+        <hr />
+
+        <h4>Preview Link sent</h4>
+        <ul>
+          {previewLinkSent}
+        </ul>
+        <hr />
+
+        <h4>Activated</h4>
+        <ul>
+          {activated}
         </ul>
         <hr />
 
