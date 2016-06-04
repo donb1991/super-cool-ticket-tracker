@@ -46,7 +46,7 @@ let Tickets = React.createClass({
     if(tickets) {
       newli = tickets.map((ticket, index) => {
         return <li key={index}>
-          <p>{ticket.ticketNumber}</p>
+          <p><a href={"#/users/1/tickets/" + ticket.ticketNumber} >{ticket.ticketNumber}</a></p>
           <p>&emsp;{ticket.title}</p>
         </li>
       });

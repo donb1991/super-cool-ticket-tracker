@@ -37,7 +37,6 @@ let TicketForm = React.createClass({
 
     handleSubmit(e) {
       e.preventDefault();
-      console.log(this.state.ticket);
       fireBaseMethods.updateTicket(this.state.ticket.ticketNumber, this.state.ticket);
     },
 
