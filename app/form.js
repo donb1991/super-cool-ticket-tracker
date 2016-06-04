@@ -13,7 +13,8 @@ let TicketForm = React.createClass({
       ticket.activated = false;
       ticket.liveLink = false;
       ticket.closed = false;
-      return {ticket: ticket, buttonVal: "Send to QA"};
+      ticket.createdAt = Date.now();
+      return {ticket: ticket};
     },
 
     componentDidMount() {
@@ -29,16 +30,19 @@ let TicketForm = React.createClass({
     handleChange(e) {
       let newState = {};
       newState.ticket = this.state.ticket;
-      newState.ticket[e.target.id] = e.target.val;
-      if(e.target.id == "ticketTask") {
-        newState.buttonVal = e.target.value == "task2" ? "Send to QA" : "Close"
-      }
+      newState.ticket[e.target.id] = e.target.type == "checkbox" ? e.target.checked : e.target.value;
       this.setState(newState);;
+    },
+
+    handleSubmit(e) {
+      e.preventDefault();
+      console.log(this.state.ticket);
+      fireBaseMethods.updateTicket(this.state.ticket.ticketNumber, this.state.ticket);
     },
 
     render() {
       return (
-        <form id="ticketForm" action="#" method="post">
+        <form id="ticketForm" action="#" method="post" onSubmit={this.handleSubmit}>
           <div className="form-group">
             <label for="ticketNumber" > Ticket # </label>
             <input type="text" id="ticketNumber"  placeholder="RITM #" className="form-control" value={this.state.ticket.ticketNumber} onChange={this.handleChange}/>
@@ -49,23 +53,24 @@ let TicketForm = React.createClass({
             <label for="ticketTask">Task</label>
             <select id="ticketTask" className="form-control" value={this.state.ticket.ticketTask} onChange={this.handleChange}>
               <option value="task2">Task 2</option>
+              <option value="task3">Task 3</option>
               <option value="task4">Task 4</option>
               <option value="dynamictask">Dynamic Task</option>
             </select>
             <div className="checkbox" >
-              <label><input type="checkbox" id="cmFeedback" value={this.state.ticket.cmFeedback} onChange={this.handleChange}/>Need CM feedback</label>
+              <label><input type="checkbox" id="cmFeedback" checked={this.state.ticket.cmFeedback} onChange={this.handleChange}/>Need CM feedback</label>
             </div>
             <div className="checkbox">
-              <label> <input type="checkbox" id="previewLink" value={this.state.ticket.previewLink} onChange={this.handleChange}/>Preview Link</label>
+              <label> <input type="checkbox" id="previewLink" checked={this.state.ticket.previewLink} onChange={this.handleChange}/>Preview Link</label>
             </div>
             <div className="checkbox">
-              <label> <input type="checkbox"  id="activated" value={this.state.ticket.activated} onChange={this.handleChange}/>Activated</label>
+              <label> <input type="checkbox"  id="activated" checked={this.state.ticket.activated} onChange={this.handleChange}/>Activated</label>
             </div>
             <div className="checkbox">
-              <label> <input type="checkbox" id="liveLink" value={this.state.ticket.liveLink} onChange={this.handleChange}/>Live Link Sent</label>
+              <label> <input type="checkbox" id="liveLink" checked={this.state.ticket.liveLink} onChange={this.handleChange}/>Live Link Sent</label>
             </div>
             <input type="button" className="btn btn-primary" value="Start" />
-            <input type="button" className="btn btn-primary" value={this.state.buttonVal} />
+            <button type="submit" className="btn btn-primary">Complete</button>
           </div>
         </form>
       );
