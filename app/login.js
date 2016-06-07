@@ -25,7 +25,6 @@ let Login = React.createClass({
 
     handleSumbit(e) {
         e.preventDefault();
-        console.log(this.state.user);
         this.props.login(this.state.user);
     },
 

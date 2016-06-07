@@ -10,37 +10,40 @@ import fireBaseMethods from '../fireBaseMethods.js';
 let history = createBrowserHistory();
 let App = React.createClass({
   componentDidMount() {
-    let currentUser = fireBaseMethods.currentUser()
-    this.setState({user: currentUser});
-    if(currentUser) {
-      this.updateLocation('#/users/' + currentUser, 'tickets');
+    let currentUser = fireBaseMethods.currentUser();
+    let location;
+    if(this.state.user) {
+      location = 'tickets';
+      document.location.hash = "#/users/" + this.state.user;
     } else {
-      this.updateLocation('#/login', 'login');
+      location = 'login';
+      document.location.hash = 'login';
     }
+    this.setState({location: location});
   },
 
   getInitialState() {
-    return {user: undefined, location: 'login'};
+    let currentUser = fireBaseMethods.currentUser();
+    return {user: currentUser, location: ''};
   },
 
   logout(e) {
     e.preventDefault();
     fireBaseMethods.logout();
-    this.updateLocation('#/login', 'login');
-    this.setState({user: undefined});
+    this.setState({user: undefined, location: "login"});
+    document.location.hash = '#/login';
   },
 
   login(userInfo) {
     fireBaseMethods.login(userInfo).then((user) => {
-      this.setState({user: user.uid});
-      this.updateLocation("#/users/" + user, 'currentUser');
+      this.setState({user: user.uid, location: 'tickets'});
+      document.location.hash = "#/users/" + user.uid;
     }, function(err) {
       console.log(err);
     });
   },
 
   updateLocation(url, location) {
-     document.location.hash = url;
      this.setState({location: location});
   },
 
@@ -66,7 +69,8 @@ let App = React.createClass({
     if(this.props.children) {
       children = React.cloneElement(this.props.children, {
         login: this.login,
-        updateLocation: this.updateLocation
+        updateLocation: this.updateLocation,
+        user: this.state.user
       });
     }
 

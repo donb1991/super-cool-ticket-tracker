@@ -19,13 +19,13 @@ let TicketForm = React.createClass({
     },
 
     componentDidMount() {
-      let currentUser = fireBaseMethods.currentUser();
       if(document.location.hash.indexOf("new") == -1) {
         let ticketNumber = document.location.hash.substring(document.location.hash.lastIndexOf("/") + 1, document.location.hash.indexOf("?"));
-        fireBaseMethods.getTicket(currentUser, ticketNumber).then((data) => {
+        fireBaseMethods.getTicket(this.props.user, ticketNumber).then((data) => {
           this.setState({ticket: data});
         });
       }
+      this.props.updateLocation('ticket')
     },
 
     handleChange(e) {

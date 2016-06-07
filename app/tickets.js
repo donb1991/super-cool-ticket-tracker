@@ -4,41 +4,38 @@ import fireBaseMethods from '../fireBaseMethods.js';
 let Tickets = React.createClass({
 
   componentDidMount() {
-    let currentUser = fireBaseMethods.currentUser();
-
-    if(!currentUser) {
-      document.location.hash = '#/login';
+    if(this.props.user) {
+      fireBaseMethods.getUserTickets(this.props.user).then((data) => {
+        let newState = {};
+        newState.inProduction = [];
+        newState.waitingForCMFeedback = [];
+        newState.inQA = [];
+        newState.closed = [];
+        newState.activated = [];
+        newState.previewLink = []
+        for(let ticket in data) {
+          if(data[ticket].closed) {
+            newState.closed.push(data[ticket]);
+          } else if(data[ticket].task == "task3") {
+            newState.inQA.push(data[ticket]);
+          } else if(data[ticket].cmFeedback) {
+            newState.waitingForCMFeedback.push(data[ticket]);
+          } else if(data[ticket].activated) {
+            newState.activated.push(data[ticket]);
+          } else if(data[ticket].previewLink) {
+            newState.previewLink.push(data[ticket]);
+          } else {
+            newState.inProduction.push(data[ticket]);
+          }
+        }
+        this.setState({tickets: newState});
+      });
     }
-    fireBaseMethods.getUserTickets(currentUser).then((data) => {
-      let newState = {};
-      newState.inProduction = [];
-      newState.waitingForCMFeedback = [];
-      newState.inQA = [];
-      newState.closed = [];
-      newState.activated = [];
-      newState.previewLink = []
-      for(let ticket in data) {
-        if(data[ticket].closed) {
-          newState.closed.push(data[ticket]);
-        } else if(data[ticket].task == "task3"){
-          newState.inQA.push(data[ticket]);
-        } else if(data[ticket].cmFeedback) {
-          newState.waitingForCMFeedback.push(data[ticket]);
-        } else if(data[ticket].activated) {
-          newState.activated.push(data[ticket]);
-        } else if(data[ticket].previewLink) {
-          newState.previewLink.push(data[ticket]);
-        }
-        else {
-          newState.inProduction.push(data[ticket]);
-        }
-      }
-      this.setState({tickets: newState});
-    });
   },
 
   handleClick(e) {
-    this.props.updateLocation('users/1/tickets/new', 'tickets');
+    this.props.updateLocation('tickets');
+    document.location.hash = 'users/' + this.props.user + '/tickets/new';
   },
 
   createli(tickets) {
@@ -46,7 +43,7 @@ let Tickets = React.createClass({
     if(tickets) {
       newli = tickets.map((ticket, index) => {
         return <li key={index}>
-          <p><a href={"#/users/1/tickets/" + ticket.ticketNumber} >{ticket.ticketNumber}</a></p>
+          <p><a href={"#/users/" + this.props.user + "/tickets/" + ticket.ticketNumber} >{ticket.ticketNumber}</a></p>
           <p>&emsp;{ticket.title}</p>
         </li>
       });
@@ -65,8 +62,8 @@ let Tickets = React.createClass({
       cmFeedback = this.createli(this.state.tickets.waitingForCMFeedback);
       inQA = this.createli(inQA);
       closed = this.createli(this.state.tickets.closed);
-      activated = this.createli(this.state.tickets.closed);
-      previewLinkSent = this.createli(this.state.tickets.closed);
+      activated = this.createli(this.state.tickets.activated);
+      previewLinkSent = this.createli(this.state.tickets.previewLink);
     }
 
     return (
