@@ -2,7 +2,9 @@ import React from 'react';
 import fireBaseMethods from '../fireBaseMethods.js';
 
 let Tickets = React.createClass({
-
+  getInitialState() {
+    return {tickets: [], newTicket: ""};
+  },
   componentDidMount() {
     if(this.props.user) {
       fireBaseMethods.getUserTickets(this.props.user).then((data) => {
@@ -32,10 +34,12 @@ let Tickets = React.createClass({
       });
     }
   },
-
+  handleChange(e) {
+    this.setState({newTicket: e.target.value});
+  },
   handleClick(e) {
     this.props.updateLocation('tickets');
-    document.location.hash = 'users/' + this.props.user + '/tickets/new';
+    document.location.hash = 'users/' + this.props.user + '/tickets/' + this.state.newTicket;
   },
 
   createli(tickets) {
@@ -68,14 +72,19 @@ let Tickets = React.createClass({
 
     return (
       <div>
-        <div className="form-group">
-          <form>
-            <label>Search<br /><input type="text" name="search" className="form-control"/></label><br />
-            <input type="button" className="btn btn-primary form-control" value="New Ticket" onClick={this.handleClick}/>
-            <hr />
-          </form>
-        </div>
 
+            <div className="input-group">
+              <input type="text" name="search" className="form-control" value={this.state.newTicket} onChange={this.handleChange}/>
+              <span className="input-group-btn">
+                <button type="button" className="btn btn-primary" onClick={this.handleClick}>New Ticket</button>
+              </span>
+            </div> 
+            <div className="input-group">
+              <span className="input-group-addon">Search</span>
+              <input type="text" name="search" className="form-control"/>
+            </div> 
+
+        <hr />
         <h4>Current Ticket</h4>
         <ul>
           <li>
