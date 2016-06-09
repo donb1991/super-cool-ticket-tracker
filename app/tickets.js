@@ -9,28 +9,31 @@ let Tickets = React.createClass({
     if(this.props.user) {
       fireBaseMethods.getUserTickets(this.props.user).then((data) => {
         let newState = {};
+        newState.currentTicket = [];
         newState.inProduction = [];
         newState.waitingForCMFeedback = [];
         newState.inQA = [];
         newState.closed = [];
         newState.activated = [];
         newState.previewLink = []
-        for(let ticket in data) {
-          if(data[ticket].closed) {
-            newState.closed.push(data[ticket]);
-          } else if(data[ticket].task == "task3") {
-            newState.inQA.push(data[ticket]);
-          } else if(data[ticket].cmFeedback) {
-            newState.waitingForCMFeedback.push(data[ticket]);
-          } else if(data[ticket].activated) {
-            newState.activated.push(data[ticket]);
-          } else if(data[ticket].previewLink) {
-            newState.previewLink.push(data[ticket]);
+        for(let ticket in data.tickets) {
+          if(data.tickets[ticket].ticketNumber == data.currentTicket) {
+            newState.currentTicket.push(data.tickets[ticket]);
+          } else if(data.tickets[ticket].closed) {
+            newState.closed.push(data.tickets[ticket]);
+          } else if(data.tickets[ticket].task == "3") {
+            newState.inQA.push(data.tickets[ticket]);
+          } else if(data.tickets[ticket].cmFeedback) {
+            newState.waitingForCMFeedback.push(data.tickets[ticket]);
+          } else if(data.tickets[ticket].activated) {
+            newState.activated.push(data.tickets[ticket]);
+          } else if(data.tickets[ticket].previewLink) {
+            newState.previewLink.push(data.tickets[ticket]);
           } else {
-            newState.inProduction.push(data[ticket]);
+            newState.inProduction.push(data.tickets[ticket]);
           }
         }
-        this.setState({tickets: newState});
+        this.setState({tickets: newState, currentTicket: data.currentTicket});
       });
     }
   },
@@ -41,7 +44,6 @@ let Tickets = React.createClass({
     this.props.updateLocation('tickets');
     document.location.hash = 'users/' + this.props.user + '/tickets/' + this.state.newTicket;
   },
-
   createli(tickets) {
     let newli = "";
     if(tickets) {
@@ -61,10 +63,12 @@ let Tickets = React.createClass({
     let closed = "";
     let previewLinkSent = "";
     let activated = "";
-    if(this.state) {
+    let currentTicket = "";
+    if(this.state.tickets) {
+      currentTicket = this.createli(this.state.tickets.currentTicket);
       production = this.createli(this.state.tickets.inProduction);
       cmFeedback = this.createli(this.state.tickets.waitingForCMFeedback);
-      inQA = this.createli(inQA);
+      inQA = this.createli(this.state.tickets.inQA);
       closed = this.createli(this.state.tickets.closed);
       activated = this.createli(this.state.tickets.activated);
       previewLinkSent = this.createli(this.state.tickets.previewLink);
@@ -72,7 +76,6 @@ let Tickets = React.createClass({
 
     return (
       <div>
-
             <div className="input-group">
               <input type="text" name="search" className="form-control" value={this.state.newTicket} onChange={this.handleChange}/>
               <span className="input-group-btn">
@@ -86,12 +89,9 @@ let Tickets = React.createClass({
 
         <hr />
         <h4>Current Ticket</h4>
-        <ul>
-          <li>
-              <p>RITM3528330</p>
-              <p>&emsp;Launch: Broadwell-E > Core i7-6950x animation</p>
-          </li>
-        </ul>
+          <ul>
+            {currentTicket}
+          </ul>
         <hr />
 
         <h4>Production</h4>

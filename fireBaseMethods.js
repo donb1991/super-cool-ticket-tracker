@@ -34,7 +34,7 @@ function fireBaseMethods() {
 
     getTicket: function(user, ticketNumber) {
       let deferred = $.Deferred();
-      let ticketRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user + '/' + ticketNumber);
+      let ticketRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user + '/tickets/' + ticketNumber);
 
       ticketRef.once('value', function(dataSnapshot) {
         deferred.resolve(dataSnapshot.val());
@@ -44,9 +44,9 @@ function fireBaseMethods() {
       return deferred;
     },
 
-    getUserTickets: function(userId) {
+    getUserTickets: function(user) {
       let deferred = $.Deferred();
-      let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + userId);
+      let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user);
 
       userRef.once('value', function(dataSnapshot) {
         deferred.resolve(dataSnapshot.val());
@@ -59,11 +59,12 @@ function fireBaseMethods() {
 
     updateTicket: function(ticketNumber, ticketInfo) {
       let user = this.currentUser();
+
       if(!user) {
         thorw("Must be logged in to make changes to a ticket");
       }
 
-      ref.child("users").child(user).child(ticketNumber).update(ticketInfo);
+      ref.child("users").child(user).child('tickets').child(ticketNumber).update(ticketInfo);
     },
 
     updateTimeSegment: function(ticketNumber, timeSegment) {
