@@ -1,5 +1,5 @@
 import React  from 'react';
-import fireBaseMethods from '../fireBaseMethods.js';
+import fireBaseMethods from '../../fireBaseMethods.js';
 
 let Login = React.createClass({
 

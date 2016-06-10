@@ -2,9 +2,10 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, Link, hashHistory } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory'
-import Login from './login.js';
-import TicketForm from './form.js';
-import Tickets from './tickets.js';
+import Login from './user/login.js';
+import Edit from './tickets/edit.js';
+import List from './tickets/list.js';
+import Tickets from './tickets/tickets.js';
 import fireBaseMethods from '../fireBaseMethods.js';
 
 let history = createBrowserHistory();
@@ -14,7 +15,7 @@ let App = React.createClass({
     let location;
     if(this.state.user) {
       location = 'tickets';
-      document.location.hash = "#/users/" + this.state.user;
+      document.location.hash = "#/users/" + this.state.user + "/tickets";
     } else {
       location = 'login';
       document.location.hash = 'login';
@@ -37,7 +38,7 @@ let App = React.createClass({
   login(userInfo) {
     fireBaseMethods.login(userInfo).then((user) => {
       this.setState({user: user.uid, location: 'tickets'});
-      document.location.hash = "#/users/" + user.uid;
+      document.location.hash = "#/users/" + user.uid + "/tickets";
     }, function(err) {
       console.log(err);
     });
@@ -53,7 +54,7 @@ let App = React.createClass({
     if(this.state.user) {
       navOptions = (
         <ul className="nav navbar-nav">
-          <li className={this.state.location === "tickets" ? "active" : ""}><a href={"#/users/" + this.state.user}>All Tickets</a></li>
+          <li className={this.state.location === "tickets" ? "active" : ""}><a href={"#/users/" + this.state.user + "/tickets"}>All Tickets</a></li>
           <li className={this.state.location === "ticket" ? "active" : ""}><a href={"#/users/" + this.state.user + "/tickets/new"}>New Ticket</a></li>
           <li><a onClick={this.logout}>Log Out</a></li>
         </ul>);
@@ -67,11 +68,16 @@ let App = React.createClass({
 
     let children = this.props.children;
     if(this.props.children) {
-      children = React.cloneElement(this.props.children, {
-        login: this.login,
-        updateLocation: this.updateLocation,
-        user: this.state.user
-      });
+      if(this.props.children.type.displayName == "Login") {
+        children = React.cloneElement(this.props.children, {
+          login: this.login,
+          updateLocation: this.updateLocation
+        });
+      } else {
+        children = React.cloneElement(this.props.children, {
+          user: this.state.user
+        });
+      }
     }
 
     return (
@@ -105,8 +111,10 @@ render((
   <Router history={hashHistory}>
     <Route path="/" component={App}>
       <Route path="login" component={Login}> </Route>
-      <Route path="users/:id" component={Tickets}></Route>
-      <Route path="users/:id/tickets/:id" component={TicketForm}></Route>
+      <Route path="users/:id" component={Tickets}>
+        <Route path="tickets" component={List}></Route>
+        <Route path="tickets/:id" component={Edit}></Route>
+      </Route>
     </Route>
   </Router>
 ),  document.getElementById('content'));
