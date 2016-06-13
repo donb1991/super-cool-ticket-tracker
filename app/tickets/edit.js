@@ -1,5 +1,6 @@
 import React  from 'react';
 import fireBaseMethods from '../../fireBaseMethods.js';
+import moment from "moment"
 
 let Edit = React.createClass({
     getDefaultProps() {
@@ -13,22 +14,31 @@ let Edit = React.createClass({
           previewLink: false,
           activated: false,
           liveLink: false,
-          closed: false
+          closed: false,
+          createdAt: moment().format('LLL'),
+          timeSegement: {}
         }, 
         currentlyWorking: ""
       }
     },
-    handleClick(e) {
+    componentDidMount() {
+      let ticketNumber = document.location.hash.substring(document.location.hash.lastIndexOf("/") + 1, document.location.hash.indexOf("?"));
+      if(this.props.ticket.ticketNumber != ticketNumber) {
+        let ticket = this.props.ticket;
+        ticket.ticketNumber = ticketNumber;
+        this.props.updateTicket(ticket, false);
+      }
+      let timeSegement = {start: this.props.ticket.createdAt};
+      if(!this.props.ticket.timeSegements) {
 
+      }
     },
     handleChange(e) {
       let ticket = {};
       ticket = this.props.ticket;
       ticket[e.target.id] = e.target.type == "checkbox" ? e.target.checked : e.target.value;
       this.props.updateTicket(ticket, false);
-      
     },
-
     handleSubmit(e) {
       e.preventDefault();
 
@@ -39,8 +49,7 @@ let Edit = React.createClass({
       } else {
         ticket.task++;
       }
-
-      this.props.updateTicket(ticket, true)
+      this.props.updateTicket(ticket, true);
     },
     render() {
       let submit = "";

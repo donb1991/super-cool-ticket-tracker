@@ -3,21 +3,20 @@ import fireBaseMethods from '../../fireBaseMethods.js';
 
 let List = React.createClass({
   getInitialState() {
-    return {newTicket: ""};
+    return null;
   },
   handleChange(e) {
-    this.setState({newTicket: e.target.value});
+    this.props.updateNewTicket(e.target.value)
   },
   handleClick(e) {
-    // this.props.updateLocation('tickets');
-    document.location.hash = 'users/' + this.props.user + '/tickets/' + this.state.newTicket;
+    document.location.hash = 'users/' + this.props.user + '/tickets/' + this.props.newTicket;
   },
   createli(tickets) {
     let newli = "";
     if(tickets) {
       newli = tickets.map((ticket, index) => {
         return <li key={index}>
-          <p><a href={"#/users/" + this.props.user + "/tickets/" + ticket.ticketNumber} >{ticket.ticketNumber}</a></p>
+          <p><a href={"#/users/" + this.props.user + "/tickets/" + ticket.ticketNumber}>{ticket.ticketNumber}</a></p>
           <p>&emsp;{ticket.title}</p>
         </li>
       });
@@ -71,16 +70,16 @@ let List = React.createClass({
 
     return (
       <div>
-            <div className="input-group">
-              <input type="text" name="search" className="form-control" value={this.state.newTicket} onChange={this.handleChange}/>
-              <span className="input-group-btn">
-                <button type="button" className="btn btn-primary" onClick={this.handleClick}>New Ticket</button>
-              </span>
-            </div> 
-            <div className="input-group">
-              <span className="input-group-addon">Search</span>
-              <input type="text" name="search" className="form-control"/>
-            </div> 
+        <div className="input-group">
+          <input type="text" name="search" className="form-control" value={this.props.newTicket} onChange={this.handleChange}/>
+          <span className="input-group-btn">
+            <button type="button" className="btn btn-primary" onClick={this.handleClick}>New Ticket</button>
+          </span>
+        </div> 
+        <div className="input-group">
+          <span className="input-group-addon">Search</span>
+          <input type="text" name="search" className="form-control"/>
+        </div> 
 
         <hr />
         <h4>Current Ticket</h4>

@@ -75,6 +75,7 @@ function fireBaseMethods() {
       }
       ticketRef.orderByKey().once('value', function(snapshot) {
         let currentTimeSegments = snapshot.val();
+        console.log(currentTimeSegments)
         if(currentTimeSegments.timeSegments === undefined) {
           ticketRef.child('timeSegments').push(timeSegment);
         } else {
