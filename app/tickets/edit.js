@@ -1,6 +1,6 @@
 import React  from 'react';
 import fireBaseMethods from '../../fireBaseMethods.js';
-import moment from "moment"
+import moment from "moment";
 
 let Edit = React.createClass({
     getDefaultProps() {
@@ -16,7 +16,6 @@ let Edit = React.createClass({
           liveLink: false,
           closed: false,
           createdAt: moment().format('LLL'),
-          timeSegement: {}
         }, 
         currentlyWorking: ""
       }

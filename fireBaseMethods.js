@@ -1,4 +1,6 @@
+import moment from "moment";
 let $ = require('jquery');
+
 
 function fireBaseMethods() {
   "use strict";
@@ -52,6 +54,41 @@ function fireBaseMethods() {
         deferred.resolve(dataSnapshot.val());
       }, function(err) {
         deferred.reject(err);
+      });
+
+      return deferred;
+    },
+
+    createTicket(ticketNumber) {
+      let user = this.currentUser();
+      let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user);
+      this.endTimeSegement().then(function() {
+        userRef.update({currentTicket: ticketNumber});
+        userRef.child('tickets').child(ticketNumber).child("timeSegments").push({start: moment().format('LLL')});
+      });
+     },
+
+    endTimeSegement() {
+      let deferred = $.Deferred();
+      let user = this.currentUser();
+      let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user);
+      let currentTicket = "";
+
+      userRef.once('value', function(dataSnapshot) {
+        
+        currentTicket = dataSnapshot.val().currentTicket;
+        console.log(currentTicket);
+        if(currentTicket) {
+          let ticket = dataSnapshot.val().tickets[currentTicket];
+          let keys = Object.keys(ticket.timeSegments);
+          console.log(keys);
+          for(var i = 0; i < keys.length; i++) {
+            if(ticket.timeSegments[keys[i]].end === undefined) {
+              userRef.child('tickets').child(currentTicket).child('timeSegments').child(keys[i]).update({end: moment().format("LLL")});
+              return;
+            }
+          }
+        }
       });
 
       return deferred;

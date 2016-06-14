@@ -9,6 +9,7 @@ let List = React.createClass({
     this.props.updateNewTicket(e.target.value)
   },
   handleClick(e) {
+    fireBaseMethods.createTicket(this.props.newTicket);
     document.location.hash = 'users/' + this.props.user + '/tickets/' + this.props.newTicket;
   },
   createli(tickets) {
