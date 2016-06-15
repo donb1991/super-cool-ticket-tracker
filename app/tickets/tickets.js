@@ -25,12 +25,18 @@ let Tickets = React.createClass({
 			if(close) {
 				newState.currentTicket = "";
 			}
+		} else {
+			newState.tickets = {};
+			newState.tickets[ticket.ticketNumber] = ticket;
 		}
 		this.setState(newState);
 		fireBaseMethods.updateTicket(ticket.ticketNumber, ticket);
 	},
 	updateNewTicket(newTicket) {
 		this.setState({newTicket: newTicket});
+	},
+	updateCurrentTicket(currentTicket) {
+		this.setState({currentTicket: currentTicket});
 	},
 	updateView(ticketNumber) {
 		updateNewTicket(ticketNumber);
@@ -43,10 +49,12 @@ let Tickets = React.createClass({
 			children = React.cloneElement(this.props.children, {
         tickets: this.state.tickets,
         currentTicket: this.state.currentTicket,
+        updateCurrentTicket: this.updateCurrentTicket,
         user: this.props.user,
         updateNewTicket: this.updateNewTicket,
      		newTicket: this.state.newTicket,
-     		updateView: this.updateView
+     		updateView: this.updateView,
+     		updateTicket: this.updateTicket
       });
 		} else {
 			let ticketNumber = document.location.hash.substring(document.location.hash.lastIndexOf("/") + 1, document.location.hash.indexOf("?"));

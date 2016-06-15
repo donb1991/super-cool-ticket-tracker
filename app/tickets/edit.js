@@ -4,9 +4,10 @@ import moment from "moment";
 
 let Edit = React.createClass({
     getDefaultProps() {
+      let ticketNumber = document.location.hash.substring(document.location.hash.lastIndexOf("/") + 1, document.location.hash.indexOf("?"));
       return {
         ticket: {
-          ticketNumber: "",
+          ticketNumber: ticketNumber,
           title: "",
           notes: "",
           task: "2",
@@ -17,7 +18,7 @@ let Edit = React.createClass({
           closed: false,
           createdAt: moment().format('LLL'),
         }, 
-        currentlyWorking: ""
+        currentlyWorking: ticketNumber
       }
     },
     componentDidMount() {

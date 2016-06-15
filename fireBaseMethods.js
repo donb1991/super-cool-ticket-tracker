@@ -22,7 +22,6 @@ function fireBaseMethods() {
         if(err) {
           deferred.reject(err);
         }
-
         if(user) {
           deferred.resolve(user);
         }
@@ -62,8 +61,9 @@ function fireBaseMethods() {
     createTicket(ticketNumber) {
       let user = this.currentUser();
       let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user);
-      this.endTimeSegement().then(function() {
+      this.endTimeSegement().done(function() {
         userRef.update({currentTicket: ticketNumber});
+        userRef.child('tickets').child(ticketNumber).update({ticketNumber: ticketNumber});
         userRef.child('tickets').child(ticketNumber).child("timeSegments").push({start: moment().format('LLL')});
       });
      },
@@ -75,22 +75,33 @@ function fireBaseMethods() {
       let currentTicket = "";
 
       userRef.once('value', function(dataSnapshot) {
-        
         currentTicket = dataSnapshot.val().currentTicket;
-        console.log(currentTicket);
+
         if(currentTicket) {
           let ticket = dataSnapshot.val().tickets[currentTicket];
           let keys = Object.keys(ticket.timeSegments);
-          console.log(keys);
+
           for(var i = 0; i < keys.length; i++) {
+
             if(ticket.timeSegments[keys[i]].end === undefined) {
               userRef.child('tickets').child(currentTicket).child('timeSegments').child(keys[i]).update({end: moment().format("LLL")});
+  
+              if(currentTicket.timeWorked) {
+                let timeWorked =  currentTicket.timeWorked + (moment(ticket.timeSegments[keys[i]].end).diff(ticket.timeSegments[keys[i]].start) / 60000)
+                userRef.child('tickets').child(currentTicket).update({timeWorked: timeWorked});
+              } else {
+                let timeWorked = moment(ticket.timeSegments[keys[i]].end).diff(ticket.timeSegments[keys[i]].start) / 60000
+                userRef.child('tickets').child(currentTicket).update({timeWorked: timeWorked});
+              }
+
+              deferred.resolve(true);
               return;
             }
           }
+        } else {
+          deferred.resolve(false);
         }
       });
-
       return deferred;
     },
 
@@ -102,30 +113,6 @@ function fireBaseMethods() {
       }
 
       ref.child("users").child(user).child('tickets').child(ticketNumber).update(ticketInfo);
-    },
-
-    updateTimeSegment: function(ticketNumber, timeSegment) {
-      let user = this.currentUser();
-      let ticketRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user + '/' + ticketNumber);
-      if(!user) {
-        throw("Must be logged in to make changes to a ticket");
-      }
-      ticketRef.orderByKey().once('value', function(snapshot) {
-        let currentTimeSegments = snapshot.val();
-        console.log(currentTimeSegments)
-        if(currentTimeSegments.timeSegments === undefined) {
-          ticketRef.child('timeSegments').push(timeSegment);
-        } else {
-          let keys = Object.keys(currentTimeSegments.timeSegments);
-          for(var i = 0; i < keys.length; i++) {
-            if(currentTimeSegments.timeSegments[keys[i]].end === undefined) {
-              ticketRef.child('timeSegments').child(keys[i]).update(timeSegment);
-              return;
-            }
-          }
-          ticketRef.child('timeSegments').push(timeSegment);
-        }
-      });
     }
   };
 

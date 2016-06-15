@@ -10,6 +10,8 @@ let List = React.createClass({
   },
   handleClick(e) {
     fireBaseMethods.createTicket(this.props.newTicket);
+    this.props.updateCurrentTicket(this.props.newTicket);
+    this.props.updateTicket({ticketNumber: this.props.newTicket});
     document.location.hash = 'users/' + this.props.user + '/tickets/' + this.props.newTicket;
   },
   createli(tickets) {
