@@ -37,15 +37,12 @@ let Edit = React.createClass({
     },
     handleClick(e) {
       let target = e.target.value
-      console.log(target)
       fireBaseMethods.endTimeSegement().then(() => {
 
         if(target == "Start Working") {
-          console.log('TESTING')
           fireBaseMethods.newTimeSegement(moment().format("LLL"), this.props.ticket.ticketNumber);
           this.props.updateCurrentTicket(this.props.ticket.ticketNumber);
         } else if(target == "Stop Working") {
-          console.log('testing 2')
           this.props.updateCurrentTicket("");
         }
       });
