@@ -33,10 +33,10 @@ let Tickets = React.createClass({
 		fireBaseMethods.updateTicket(ticket.ticketNumber, ticket);
 	},
 	updateNewTicket(newTicket) {
-		this.setState({newTicket: newTicket});
+		this.setState({newTicket: newTicket.trim()});
 	},
 	updateCurrentTicket(currentTicket) {
-		this.setState({currentTicket: currentTicket});
+		this.setState({currentTicket: currentTicket.trim()});
 	},
 	updateView(ticketNumber) {
 		updateNewTicket(ticketNumber);
