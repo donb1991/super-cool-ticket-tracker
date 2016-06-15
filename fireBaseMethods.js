@@ -63,7 +63,7 @@ function fireBaseMethods() {
       let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user);
       this.endTimeSegement().done(function() {
         userRef.update({currentTicket: ticketNumber});
-        userRef.child('tickets').child(ticketNumber).update({ticketNumber: ticketNumber});
+        userRef.child('tickets').child(ticketNumber).update({ticketNumber: ticketNumber, createdAt: moment().format('LLL')});
         userRef.child('tickets').child(ticketNumber).child("timeSegments").push({start: moment().format('LLL')});
       });
     },

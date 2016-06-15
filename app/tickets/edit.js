@@ -54,9 +54,11 @@ let Edit = React.createClass({
       ticket = this.props.ticket;
       if(this.props.ticket.task == "4" || this.props.ticket.task == "dynamictask") {
         ticket.closed = true;
+        ticket.closedAt = moment().format("LLL");
       } else {
-        ticket.task++;
+        ticket.task = 3;
       }
+      fireBaseMethods.endTimeSegement();
       this.props.updateTicket(ticket, true);
     },
     render() {
