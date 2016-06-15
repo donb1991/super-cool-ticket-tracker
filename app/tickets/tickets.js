@@ -68,6 +68,7 @@ let Tickets = React.createClass({
         ticket: ticket,
         currentTicket: this.state.currentTicket,
         updateTicket: this.updateTicket,
+        updateCurrentTicket: this.updateCurrentTicket,
         newTicket: this.state.newTicket
       });
 		}

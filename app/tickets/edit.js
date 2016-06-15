@@ -28,16 +28,27 @@ let Edit = React.createClass({
         ticket.ticketNumber = ticketNumber;
         this.props.updateTicket(ticket, false);
       }
-      let timeSegement = {start: this.props.ticket.createdAt};
-      if(!this.props.ticket.timeSegements) {
-
-      }
     },
     handleChange(e) {
       let ticket = {};
       ticket = this.props.ticket;
       ticket[e.target.id] = e.target.type == "checkbox" ? e.target.checked : e.target.value;
       this.props.updateTicket(ticket, false);
+    },
+    handleClick(e) {
+      let target = e.target.value
+      console.log(target)
+      fireBaseMethods.endTimeSegement().then(() => {
+
+        if(target == "Start Working") {
+          console.log('TESTING')
+          fireBaseMethods.newTimeSegement(moment().format("LLL"), this.props.ticket.ticketNumber);
+          this.props.updateCurrentTicket(this.props.ticket.ticketNumber);
+        } else if(target == "Stop Working") {
+          console.log('testing 2')
+          this.props.updateCurrentTicket("");
+        }
+      });
     },
     handleSubmit(e) {
       e.preventDefault();
@@ -86,7 +97,7 @@ let Edit = React.createClass({
               <label> <input type="checkbox" id="liveLink" checked={this.props.ticket.liveLink} onChange={this.handleChange}/>Live Link Sent</label>
             </div>
             <div className="btn-toolbar">
-              <input type="button" className="btn btn-primary" value={this.props.currentTicket == this.props.ticket.ticketNumber ? "Stop Working" : "Start Working"} onClick={this.handleClick}/>
+              <input type="button" className="btn btn-primary" onClick={this.handleClick} value={this.props.currentTicket == this.props.ticket.ticketNumber ? "Stop Working" : "Start Working"} onClick={this.handleClick}/>
               {submit}
             </div>
           </div>

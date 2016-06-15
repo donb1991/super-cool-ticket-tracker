@@ -66,7 +66,15 @@ function fireBaseMethods() {
         userRef.child('tickets').child(ticketNumber).update({ticketNumber: ticketNumber});
         userRef.child('tickets').child(ticketNumber).child("timeSegments").push({start: moment().format('LLL')});
       });
-     },
+    },
+
+    newTimeSegement(startTime, ticketNumber) {
+      let user = this.currentUser();
+      let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user);
+      let ticketRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user + "/tickets/" + ticketNumber);
+      ticketRef.child("timeSegments").push({start: startTime});
+      userRef.update({currentTicket: ticketNumber});
+    },
 
     endTimeSegement() {
       let deferred = $.Deferred();
@@ -85,7 +93,7 @@ function fireBaseMethods() {
 
             if(ticket.timeSegments[keys[i]].end === undefined) {
               userRef.child('tickets').child(currentTicket).child('timeSegments').child(keys[i]).update({end: moment().format("LLL")});
-  
+              
               if(currentTicket.timeWorked) {
                 let timeWorked =  currentTicket.timeWorked + (moment(ticket.timeSegments[keys[i]].end).diff(ticket.timeSegments[keys[i]].start) / 60000)
                 userRef.child('tickets').child(currentTicket).update({timeWorked: timeWorked});
@@ -94,6 +102,7 @@ function fireBaseMethods() {
                 userRef.child('tickets').child(currentTicket).update({timeWorked: timeWorked});
               }
 
+              userRef.update({currentTicket: ""});
               deferred.resolve(true);
               return;
             }
