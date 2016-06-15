@@ -8,7 +8,8 @@ let List = React.createClass({
   handleChange(e) {
     this.props.updateNewTicket(e.target.value)
   },
-  handleClick(e) {
+  handleSubmit(e) {
+    e.preventDefault();
     fireBaseMethods.createTicket(this.props.newTicket);
     this.props.updateCurrentTicket(this.props.newTicket);
     this.props.updateTicket({ticketNumber: this.props.newTicket});
@@ -73,12 +74,12 @@ let List = React.createClass({
 
     return (
       <div>
-        <div className="input-group">
+        <form className="input-group" onSubmit={this.handleSubmit}>
           <input type="text" name="search" className="form-control" value={this.props.newTicket} onChange={this.handleChange}/>
           <span className="input-group-btn">
-            <button type="button" className="btn btn-primary" onClick={this.handleClick}>New Ticket</button>
+            <button type="submit" className="btn btn-primary" onClick={this.handleClick}>New Ticket</button>
           </span>
-        </div> 
+        </form> 
         <div className="input-group">
           <span className="input-group-addon">Search</span>
           <input type="text" name="search" className="form-control"/>
