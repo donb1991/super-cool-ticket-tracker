@@ -18,10 +18,11 @@ let Edit = React.createClass({
           closed: false,
           createdAt: moment().format('LLL'),
         }, 
-        currentlyWorking: ticketNumber
+        currentTicket: ''
       }
     },
     componentDidMount() {
+
       let ticketNumber = document.location.hash.substring(document.location.hash.lastIndexOf("/") + 1, document.location.hash.indexOf("?"));
       if(this.props.ticket.ticketNumber != ticketNumber) {
         let ticket = this.props.ticket;
@@ -61,6 +62,9 @@ let Edit = React.createClass({
       fireBaseMethods.endTimeSegement();
       this.props.updateTicket(ticket, true);
     },
+    goBack() {
+      document.location.hash = document.location.hash.substring(1, document.location.hash.lastIndexOf('/'));
+    },
     render() {
       let submit = "";
       if(this.props.currentTicket == this.props.ticket.ticketNumber) {
@@ -68,8 +72,11 @@ let Edit = React.createClass({
       }
       return (
         <form id="ticketForm" action="#" method="post" onSubmit={this.handleSubmit}>
-          
           <div className="form-group">
+            <button type="button" onClick={this.goBack}>
+              <i className="fa fa-angle-left fa-lg" aria-hidden="true" ></i>
+            </button>
+            <br />
             <label for="ticketNumber" > Ticket # </label>
             <input type="text" id="ticketNumber"  placeholder="RITM #" className="form-control" value={this.props.ticket.ticketNumber} readOnly="true"/>
             <label for="title">Title</label>

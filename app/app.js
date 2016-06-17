@@ -53,9 +53,7 @@ let App = React.createClass({
     let navOptions;
     if(this.state.user) {
       navOptions = (
-        <ul className="nav navbar-nav">
-          <li className={this.state.location === "tickets" ? "active" : ""}><a href={"#/users/" + this.state.user + "/tickets"}>All Tickets</a></li>
-          <li className={this.state.location === "ticket" ? "active" : ""}><a href={"#/users/" + this.state.user + "/tickets/new"}>New Ticket</a></li>
+        <ul className="nav ">
           <li><a onClick={this.logout}>Log Out</a></li>
         </ul>);
     } else {
@@ -83,19 +81,11 @@ let App = React.createClass({
     return (
       <div>
         <nav className="navbar navbar-default">
-          <div className="container-fluid">
-            <div className="navbar-header">
-              <span className="navbar-brand">Ticket Tracker</span>
-              <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false">
-                <span className="sr-only">Toggle navigation</span>
-                <span className="icon-bar"></span>
-                <span className="icon-bar"></span>
-                <span className="icon-bar"></span>
-              </button>
-            </div>
-            <div className="collapse navbar-collapse">
-              {navOptions}
-            </div>
+          <div className="navbar-header pull-left">
+            <span className="navbar-brand">Ticket Tracker</span>
+          </div>
+          <div className="navbar-header pull-left">
+            {navOptions}
           </div>
         </nav>
         <div className="container">

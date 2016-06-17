@@ -61,9 +61,21 @@ function fireBaseMethods() {
     createTicket(ticketNumber) {
       let user = this.currentUser();
       let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user);
+      let newTicket = {
+        ticketNumber: ticketNumber,
+        title: "",
+        notes: "",
+        task: "2",
+        cmFeedback: false,
+        previewLink: false,
+        activated: false,
+        liveLink: false,
+        closed: false,
+        createdAt: moment().format('LLL'),
+      }
       this.endTimeSegement().done(function() {
         userRef.update({currentTicket: ticketNumber});
-        userRef.child('tickets').child(ticketNumber).update({ticketNumber: ticketNumber, createdAt: moment().format('LLL')});
+        userRef.child('tickets').child(ticketNumber).update(newTicket);
         userRef.child('tickets').child(ticketNumber).child("timeSegments").push({start: moment().format('LLL')});
       });
     },
@@ -89,13 +101,14 @@ function fireBaseMethods() {
           let ticket = dataSnapshot.val().tickets[currentTicket];
           let keys = Object.keys(ticket.timeSegments);
 
+
           for(var i = 0; i < keys.length; i++) {
 
             if(ticket.timeSegments[keys[i]].end === undefined) {
               userRef.child('tickets').child(currentTicket).child('timeSegments').child(keys[i]).update({end: moment().format("LLL")});
-              
-              if(currentTicket.timeWorked) {
-                let timeWorked =  currentTicket.timeWorked + (moment(ticket.timeSegments[keys[i]].end).diff(ticket.timeSegments[keys[i]].start) / 60000)
+
+              if(ticket.timeWorked) { 
+                let timeWorked =  ticket.timeWorked + (moment(ticket.timeSegments[keys[i]].end).diff(ticket.timeSegments[keys[i]].start) / 60000)
                 userRef.child('tickets').child(currentTicket).update({timeWorked: timeWorked});
               } else {
                 let timeWorked = moment(ticket.timeSegments[keys[i]].end).diff(ticket.timeSegments[keys[i]].start) / 60000
@@ -110,7 +123,9 @@ function fireBaseMethods() {
         } else {
           deferred.resolve(false);
         }
+
       });
+
       return deferred;
     },
 
@@ -120,8 +135,14 @@ function fireBaseMethods() {
       if(!user) {
         thorw("Must be logged in to make changes to a ticket");
       }
+      let newTicket = {};
+      for(var key in ticketInfo) {
+        if(key != "timeSegments") {
+          newTicket[key] = ticketInfo[key];
+        }
+      }
 
-      ref.child("users").child(user).child('tickets').child(ticketNumber).update(ticketInfo);
+      ref.child("users").child(user).child('tickets').child(ticketNumber).update(newTicket);
     }
   };
 

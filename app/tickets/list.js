@@ -1,5 +1,7 @@
 import React from 'react';
+import Link from 'react-router/lib/Link'
 import fireBaseMethods from '../../fireBaseMethods.js';
+import moment from 'moment';
 
 let List = React.createClass({
   getInitialState() {
@@ -10,9 +12,21 @@ let List = React.createClass({
   },
   handleSubmit(e) {
     e.preventDefault();
+    let newTicket = {
+      ticketNumber: this.props.newTicket,
+      title: "",
+      notes: "",
+      task: "2",
+      cmFeedback: false,
+      previewLink: false,
+      activated: false,
+      liveLink: false,
+      closed: false,
+      createdAt: moment().format("LLL")
+    }
     fireBaseMethods.createTicket(this.props.newTicket);
     this.props.updateCurrentTicket(this.props.newTicket);
-    this.props.updateTicket({ticketNumber: this.props.newTicket});
+    this.props.updateTicket(newTicket);
     document.location.hash = 'users/' + this.props.user + '/tickets/' + this.props.newTicket;
   },
   createli(tickets) {
@@ -20,7 +34,7 @@ let List = React.createClass({
     if(tickets) {
       newli = tickets.map((ticket, index) => {
         return <li key={index}>
-          <p><a href={"#/users/" + this.props.user + "/tickets/" + ticket.ticketNumber}>{ticket.ticketNumber}</a></p>
+          <p><Link to={"/users/" + this.props.user + "/tickets/" + ticket.ticketNumber}>{ticket.ticketNumber}</Link></p>
           <p>&emsp;{ticket.title}</p>
         </li>
       });

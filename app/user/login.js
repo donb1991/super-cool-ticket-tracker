@@ -8,15 +8,6 @@ let Login = React.createClass({
             {email: "", password: ""}
         }
     },
-
-    componentDidMount() {
-        // let currentUser = fireBaseMethods.currentUser()
-
-        // if(!currentUser) {
-        //   document.location.hash = '#/';  
-        // }
-    },
-
     handleChange(e) {
         let state = this.state.user;
         state[e.target.id] = e.target.value;
