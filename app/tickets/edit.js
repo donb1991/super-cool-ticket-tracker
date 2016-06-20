@@ -72,12 +72,11 @@ let Edit = React.createClass({
       }
       return (
         <form id="ticketForm" action="#" method="post" onSubmit={this.handleSubmit}>
-          <div className="form-group">
+          <div className="">
             <button type="button" onClick={this.goBack}>
               <i className="fa fa-angle-left fa-lg" aria-hidden="true" ></i>
             </button>
-            <br />
-            <label for="ticketNumber" > Ticket # </label>
+            <label for="ticketNumber" >Ticket #</label>
             <input type="text" id="ticketNumber"  placeholder="RITM #" className="form-control" value={this.props.ticket.ticketNumber} readOnly="true"/>
             <label for="title">Title</label>
             <input type="text" id="title" className="form-control" name="title" placeholder="Title" value={this.props.ticket.title} onChange={this.handleChange}/>
