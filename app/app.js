@@ -53,15 +53,16 @@ let App = React.createClass({
     let navOptions;
     if(this.state.user) {
       navOptions = (
-        <ul className="nav ">
+        <ul className="nav navbar-nav" style={{paddingRight: 10 + "px"}}>
           <li><a onClick={this.logout}>Log Out</a></li>
         </ul>);
     } else {
       navOptions = (
-        <ul className="nav navbar-nav">
-          <li className={this.state.location === "login" ? "active" : ""}><a href="#/login" >Login</a></li>
-          <li className={this.state.location === "signup" ? "active" : ""}><a>Sign up</a></li>
-        </ul>);
+        <ul className="nav navbar-nav" style={{paddingRight: 10 + "px"}}>
+          <li className="pull-left"><a href="#/login" >Login</a></li>
+          <li className="pull-right"><a>Sign up</a></li>
+        </ul>
+      );
     }
 
     let children = this.props.children;
@@ -84,9 +85,9 @@ let App = React.createClass({
           <div className="navbar-header pull-left">
             <span className="navbar-brand">Ticket Tracker</span>
           </div>
-          <div className="navbar-header pull-left">
-            {navOptions}
-          </div>
+            <div className="navbar-header pull-right">
+              {navOptions}
+            </div>
         </nav>
         <div className="container">
           {children}
