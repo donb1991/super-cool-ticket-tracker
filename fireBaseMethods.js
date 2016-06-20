@@ -1,16 +1,12 @@
 import moment from "moment";
+import config from "./fireBaseConfig.js"
 let $ = require('jquery');
 
 
 function fireBaseMethods() {
   "use strict";
 
-  let config = {
-    apiKey: "",
-    authDomain: "sizzling-heat-8454.firebaseapp.com",
-    databaseURL: "https://sizzling-heat-8454.firebaseio.com",
-    storageBucket: "sizzling-heat-8454.appspot.com"
-  };
+
   firebase.initializeApp(config);
 
 
@@ -29,7 +25,6 @@ function fireBaseMethods() {
 
       firebase.auth().signInWithEmailAndPassword(user.email, user.password).then(function(user) {
         if(user) {
-          console.log(user.uid);
           deferred.resolve(user.uid);
         }
       },function(err) {
