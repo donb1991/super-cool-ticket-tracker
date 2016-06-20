@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { Router, Route, Link, hashHistory } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory'
 import Login from './user/login.js';
+import Signup from './user/signup.js';
 import Edit from './tickets/edit.js';
 import List from './tickets/list.js';
 import Tickets from './tickets/tickets.js';
@@ -36,7 +37,7 @@ let App = React.createClass({
   },
 
   login(userInfo) {
-    fireBaseMethods.login(userInfo).then((user) => {
+    fireBaseMethods.login(userInfo).then((user, err) => {
       this.setState({user: user.uid, location: 'tickets'});
       document.location.hash = "#/users/" + user.uid + "/tickets";
     }, function(err) {
@@ -60,7 +61,7 @@ let App = React.createClass({
       navOptions = (
         <ul className="nav navbar-nav" style={{paddingRight: 10 + "px"}}>
           <li className="pull-left"><a href="#/login" >Login</a></li>
-          <li className="pull-right"><a>Sign up</a></li>
+          <li className="pull-right"><a href="#/signup">Sign up</a></li>
         </ul>
       );
     }
@@ -102,6 +103,7 @@ render((
   <Router history={hashHistory}>
     <Route path="/" component={App}>
       <Route path="login" component={Login}> </Route>
+      <Route path="signup" component={Signup}></Route>
       <Route path="users/:id" component={Tickets}>
         <Route path="tickets" component={List}></Route>
         <Route path="tickets/:id" component={Edit}></Route>

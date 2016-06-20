@@ -5,26 +5,35 @@ let $ = require('jquery');
 function fireBaseMethods() {
   "use strict";
 
-  let ref = new Firebase("https://sizzling-heat-8454.firebaseio.com/");
+  let config = {
+    apiKey: "",
+    authDomain: "sizzling-heat-8454.firebaseapp.com",
+    databaseURL: "https://sizzling-heat-8454.firebaseio.com",
+    storageBucket: "sizzling-heat-8454.appspot.com"
+  };
+  firebase.initializeApp(config);
+
+  // let ref = new Firebase("https://sizzling-heat-8454.firebaseio.com/");
   let fireBaseObject = {
     currentUser: function() {
-      let authData = ref.getAuth();
-      if(authData) {
-        return authData.uid;
+      let currentUser = firebase.auth().currentUser;
+      console.log(currentUser);
+      if(currentUser) {
+        return currentUser.uid;
       }
       return null;
     },
 
-    login: function(userObj) {
+    login: function(user) {
       let deferred = $.Deferred();
-
-      ref.authWithPassword(userObj, function(err, user) {
-        if(err) {
-          deferred.reject(err);
-        }
+      console.log('hello?')
+      var test = firebase.auth().signInWithEmailAndPassword(user.email, user.password).then(function(user) {
+        console.log(user.u, 'user');
         if(user) {
-          deferred.resolve(user);
+          deferred.resolve(user.u);
         }
+      },function(err) {
+        deferred.reject(err.code);
       });
       return deferred.promise();
     },
@@ -143,6 +152,12 @@ function fireBaseMethods() {
       }
 
       ref.child("users").child(user).child('tickets').child(ticketNumber).update(newTicket);
+    },
+
+    createUser: function(user) {
+      firebase.auth().createUserWithEmailAndPassword(user.email, user.password).catch(function(error) {
+        console.log(error);
+      })
     }
   };
 
