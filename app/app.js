@@ -38,8 +38,8 @@ let App = React.createClass({
 
   login(userInfo) {
     fireBaseMethods.login(userInfo).then((user, err) => {
-      this.setState({user: user.uid, location: 'tickets'});
-      document.location.hash = "#/users/" + user.uid + "/tickets";
+      this.setState({user: user, location: 'tickets'});
+      document.location.hash = "#/users/" + user + "/tickets";
     }, function(err) {
       console.log(err);
     });

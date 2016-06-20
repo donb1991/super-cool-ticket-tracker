@@ -13,11 +13,11 @@ function fireBaseMethods() {
   };
   firebase.initializeApp(config);
 
-  // let ref = new Firebase("https://sizzling-heat-8454.firebaseio.com/");
+
   let fireBaseObject = {
     currentUser: function() {
       let currentUser = firebase.auth().currentUser;
-      console.log(currentUser);
+
       if(currentUser) {
         return currentUser.uid;
       }
@@ -26,11 +26,11 @@ function fireBaseMethods() {
 
     login: function(user) {
       let deferred = $.Deferred();
-      console.log('hello?')
-      var test = firebase.auth().signInWithEmailAndPassword(user.email, user.password).then(function(user) {
-        console.log(user.u, 'user');
+
+      firebase.auth().signInWithEmailAndPassword(user.email, user.password).then(function(user) {
         if(user) {
-          deferred.resolve(user.u);
+          console.log(user.uid);
+          deferred.resolve(user.uid);
         }
       },function(err) {
         deferred.reject(err.code);
@@ -56,12 +56,10 @@ function fireBaseMethods() {
 
     getUserTickets: function(user) {
       let deferred = $.Deferred();
-      let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user);
 
-      userRef.once('value', function(dataSnapshot) {
-        deferred.resolve(dataSnapshot.val());
-      }, function(err) {
-        deferred.reject(err);
+      firebase.database().ref('users/' + user).once('value').then(function(snapshot) {
+
+        deferred.resolve(snapshot.val());
       });
 
       return deferred;
@@ -69,7 +67,6 @@ function fireBaseMethods() {
 
     createTicket(ticketNumber) {
       let user = this.currentUser();
-      let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user);
       let newTicket = {
         ticketNumber: ticketNumber,
         title: "",
@@ -83,48 +80,42 @@ function fireBaseMethods() {
         createdAt: moment().format('LLL'),
       }
       this.endTimeSegement().done(function() {
-        userRef.update({currentTicket: ticketNumber});
-        userRef.child('tickets').child(ticketNumber).update(newTicket);
-        userRef.child('tickets').child(ticketNumber).child("timeSegments").push({start: moment().format('LLL')});
+        firebase.database().ref("/users/" + user).update({currentTicket: ticketNumber});
+        firebase.database().ref("/users/" + user + "/tickets/" + ticketNumber).update(newTicket);
+        firebase.database().ref("/users/" + user + "/tickets/" + ticketNumber + "/timeSegments").push({start: moment().format('LLL')});
       });
     },
 
     newTimeSegement(startTime, ticketNumber) {
       let user = this.currentUser();
-      let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user);
-      let ticketRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user + "/tickets/" + ticketNumber);
-      ticketRef.child("timeSegments").push({start: startTime});
-      userRef.update({currentTicket: ticketNumber});
+
+      firebase.database().ref("/users/" + user + "/tickets/" + ticketNumber + "/timeSegments").push({start: startTime});
+      firebase.database().ref("/users/" + user).update({currentTicket: ticketNumber});
     },
 
     endTimeSegement() {
       let deferred = $.Deferred();
       let user = this.currentUser();
-      let userRef = new Firebase("https://sizzling-heat-8454.firebaseio.com/users/" + user);
       let currentTicket = "";
 
-      userRef.once('value', function(dataSnapshot) {
+
+      firebase.database().ref("/users/" + user).once('value', function(dataSnapshot) {
         currentTicket = dataSnapshot.val().currentTicket;
 
         if(currentTicket) {
           let ticket = dataSnapshot.val().tickets[currentTicket];
           let keys = Object.keys(ticket.timeSegments);
 
-
           for(var i = 0; i < keys.length; i++) {
 
             if(ticket.timeSegments[keys[i]].end === undefined) {
-              userRef.child('tickets').child(currentTicket).child('timeSegments').child(keys[i]).update({end: moment().format("LLL")});
+              console.log('updates?')
+              firebase.database().ref("/users/" + user + '/tickets/' + currentTicket + '/timeSegments/' + keys[i]).update({end: moment().format("LLL")});
+              let timeWorked = ticket.timeWorked || 0;
 
-              if(ticket.timeWorked) { 
-                let timeWorked =  ticket.timeWorked + (moment(ticket.timeSegments[keys[i]].end).diff(ticket.timeSegments[keys[i]].start) / 60000)
-                userRef.child('tickets').child(currentTicket).update({timeWorked: timeWorked});
-              } else {
-                let timeWorked = moment(ticket.timeSegments[keys[i]].end).diff(ticket.timeSegments[keys[i]].start) / 60000
-                userRef.child('tickets').child(currentTicket).update({timeWorked: timeWorked});
-              }
-
-              userRef.update({currentTicket: ""});
+              timeWorked += moment(ticket.timeSegments[keys[i]].end).diff(ticket.timeSegments[keys[i]].start) / 60000
+              firebase.database().ref('/users/' + user + '/tickets/' + currentTicket).update({timeWorked: timeWorked});
+              firebase.database().ref("/users/" + user).update({currentTicket: ""});
               deferred.resolve(true);
               return;
             }
@@ -151,7 +142,7 @@ function fireBaseMethods() {
         }
       }
 
-      ref.child("users").child(user).child('tickets').child(ticketNumber).update(newTicket);
+      firebase.database().ref('/users/' + user + '/tickets/' + ticketNumber).update(newTicket);
     },
 
     createUser: function(user) {

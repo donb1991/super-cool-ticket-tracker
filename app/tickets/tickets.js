@@ -9,6 +9,7 @@ let Tickets = React.createClass({
 
 	componentWillMount() {
 		let newState = {};
+
 		if(this.props.user) {
 		  fireBaseMethods.getUserTickets(this.props.user).then((data) => {
 		  	newState.tickets = data.tickets;
