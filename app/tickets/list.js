@@ -29,26 +29,7 @@ let List = React.createClass({
     this.props.updateTicket(newTicket);
     document.location.hash = 'users/' + this.props.user + '/tickets/' + this.props.newTicket;
   },
-  createli(tickets) {
-    let newli = "";
-    if(tickets) {
-      newli = tickets.map((ticket, index) => {
-        return <li key={index}>
-          <p><Link to={"/users/" + this.props.user + "/tickets/" + ticket.ticketNumber}>{ticket.ticketNumber}</Link></p>
-          <p>&emsp;{ticket.title}</p>
-        </li>
-      });
-    }
-    return newli;
-  },
   render() {
-    let productionUL = "";
-    let cmFeedbackUL = "";
-    let inQAUL = "";
-    let closedUL = "";
-    let previewLinkSentUL = "";
-    let activatedUL = "";
-    let currentTicketUL = "";
     let ticketArrays = {};
     ticketArrays.currentTicket = [];
     ticketArrays.inProduction = [];
@@ -76,14 +57,6 @@ let List = React.createClass({
           ticketArrays.inProduction.push(this.props.tickets[ticket]);
         }
       }
- 
-      currentTicketUL = this.createli(ticketArrays.currentTicket);
-      productionUL = this.createli(ticketArrays.inProduction);
-      cmFeedbackUL = this.createli(ticketArrays.waitingForCMFeedback);
-      inQAUL = this.createli(ticketArrays.inQA);
-      closedUL = this.createli(ticketArrays.closed);
-      activatedUL = this.createli(ticketArrays.activated);
-      previewLinkSentUL = this.createli(ticketArrays.previewLink);
     }
 
     return (
@@ -98,47 +71,44 @@ let List = React.createClass({
           <span className="input-group-addon">Search</span>
           <input type="text" name="search" className="form-control"/>
         </div> 
-
-        <hr />
-        <h4>Current Ticket</h4>
-          <ul>
-            {currentTicketUL}
-          </ul>
         <hr />
 
-        <h4>Production</h4>
+        <UnorderList items={ticketArrays.currentTicket} user={this.props.user} title="Current Ticket"  />
+        <UnorderList items={ticketArrays.inProduction} user={this.props.user} title="In Production" />
+        <UnorderList items={ticketArrays.previewLink} user={this.props.user} title="Preview Link" />
+        <UnorderList items={ticketArrays.waitingForCMFeedback} user={this.props.user} title="Waiting For CM FeedBack" />
+        <UnorderList items={ticketArrays.inQA} user={this.props.user} title="In QA" />
+        <UnorderList items={ticketArrays.closed} user={this.props.user} title="Closed" />
+    
+      </div>
+    );
+  }
+});
+
+let UnorderList = React.createClass({
+  getInitialState() {
+    let state = JSON.parse(localStorage.getItem(this.props.title)) || {hide: false};
+    return state;
+  },
+  handleClick(e) {
+    localStorage.setItem(this.props.title, JSON.stringify({hide: !this.state.hide}));
+    this.setState({hide: !this.state.hide});
+  },
+  render() {
+    let list = this.props.items.map((ticket, index) => {
+      return <li key={index}>
+        <p><Link to={"/users/" + this.props.user + "/tickets/" + ticket.ticketNumber}>{ticket.ticketNumber}</Link></p>
+        <p>&emsp;{ticket.title}</p>
+      </li>
+    });
+    return (
+      <div>
+        <div className="row">
+          <h4 className="col-xs-11">{this.props.title}</h4>
+          <span onClick={this.handleClick}>{this.state.hide ? <i className="fa fa-chevron-up" aria-hidden="true"></i> : <i className="fa fa-chevron-down" aria-hidden="true"></i>}</span>
+        </div>
         <ul>
-          {productionUL}
-        </ul>
-        <hr />
-
-        <h4>Preview Link sent</h4>
-        <ul>
-          {previewLinkSentUL}
-        </ul>
-        <hr />
-
-        <h4>Activated</h4>
-        <ul>
-          {activatedUL}
-        </ul>
-        <hr />
-
-        <h4>Waiting on CM feedback</h4>
-        <ul>
-          {cmFeedbackUL}
-        </ul>
-        <hr />
-
-        <h4>In QA</h4>
-        <ul>
-          {inQAUL}
-        </ul>
-        <hr />
-
-        <h4>Closed</h4>
-        <ul>
-          {closedUL}
+          {this.state.hide ? null : list}
         </ul>
         <hr />
       </div>
