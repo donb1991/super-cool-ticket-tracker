@@ -31,7 +31,7 @@ function fireBaseMethods() {
         deferred.reject(err.code);
       });
       return deferred.promise();
-    },
+    }, 
 
     logout: function() {
       ref.unauth();
@@ -52,7 +52,7 @@ function fireBaseMethods() {
     getUserTickets: function(user) {
       let deferred = $.Deferred();
 
-      firebase.database().ref('users/' + user).once('value').then(function(snapshot) {
+      firebase.database().ref('users/' + user).orderByChild("dueDate").once('value').then(function(snapshot) {
 
         deferred.resolve(snapshot.val());
       });
@@ -72,12 +72,13 @@ function fireBaseMethods() {
         activated: false,
         liveLink: false,
         closed: false,
-        createdAt: moment().format('LLL'),
+        dueDate: "",
+        createdAt: moment().toISOString()
       }
       this.endTimeSegement().done(function() {
         firebase.database().ref("/users/" + user).update({currentTicket: ticketNumber});
         firebase.database().ref("/users/" + user + "/tickets/" + ticketNumber).update(newTicket);
-        firebase.database().ref("/users/" + user + "/tickets/" + ticketNumber + "/timeSegments").push({start: moment().format('LLL')});
+        firebase.database().ref("/users/" + user + "/tickets/" + ticketNumber + "/timeSegments").push({start: moment().toISOString()});
       });
     },
 
@@ -104,8 +105,7 @@ function fireBaseMethods() {
           for(var i = 0; i < keys.length; i++) {
 
             if(ticket.timeSegments[keys[i]].end === undefined) {
-              console.log('updates?')
-              firebase.database().ref("/users/" + user + '/tickets/' + currentTicket + '/timeSegments/' + keys[i]).update({end: moment().format("LLL")});
+              firebase.database().ref("/users/" + user + '/tickets/' + currentTicket + '/timeSegments/' + keys[i]).update({end: moment().toISOString()});
               let timeWorked = ticket.timeWorked || 0;
 
               timeWorked += moment(ticket.timeSegments[keys[i]].end).diff(ticket.timeSegments[keys[i]].start) / 60000

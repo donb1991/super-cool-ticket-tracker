@@ -25,7 +25,7 @@ let Signup = React.createClass({
 
     render() {
         return (
-        	<div>
+          <div>
             <div className="row">
                 <h3 className="col-xs-8 col-xs-offset-2">Sign Up</h3>
             </div>

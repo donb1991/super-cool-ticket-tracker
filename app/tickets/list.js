@@ -12,22 +12,34 @@ let List = React.createClass({
   },
   handleSubmit(e) {
     e.preventDefault();
-    let newTicket = {
-      ticketNumber: this.props.newTicket,
-      title: "",
-      notes: "",
-      task: "2",
-      cmFeedback: false,
-      previewLink: false,
-      activated: false,
-      liveLink: false,
-      closed: false,
-      createdAt: moment().format("LLL")
+    console.log(!this.props.tickets[this.props.newTicket])
+    if(!this.props.tickets[this.props.newTicket]) {
+      let newTicket = {
+        ticketNumber: this.props.newTicket,
+        title: "",
+        notes: "",
+        task: "2",
+        cmFeedback: false,
+        previewLink: false,
+        activated: false,
+        liveLink: false,
+        closed: false,
+        dueDate: "",
+        createdAt: moment().toISOString()
+      }
+      fireBaseMethods.createTicket(this.props.newTicket);
+      this.props.updateCurrentTicket(this.props.newTicket);
+      this.props.updateTicket(newTicket);
     }
-    fireBaseMethods.createTicket(this.props.newTicket);
-    this.props.updateCurrentTicket(this.props.newTicket);
-    this.props.updateTicket(newTicket);
     document.location.hash = 'users/' + this.props.user + '/tickets/' + this.props.newTicket;
+  },
+  sortByDate(array) {
+    if(array.length <= 1) {
+      return array;
+    }
+    array.sort(function(a, b) {
+      return moment(a.dueDate).diff(b.dueDate);
+    });
   },
   render() {
     let ticketArrays = {};
@@ -58,6 +70,13 @@ let List = React.createClass({
         }
       }
     }
+    this.sortByDate(ticketArrays.currentTicket);
+    this.sortByDate(ticketArrays.inProduction);
+    this.sortByDate(ticketArrays.waitingForCMFeedback);
+    this.sortByDate(ticketArrays.inQA);
+    this.sortByDate(ticketArrays.closed);
+    this.sortByDate(ticketArrays.activated);
+    this.sortByDate(ticketArrays.previewLink);
 
     return (
       <div>
@@ -67,15 +86,12 @@ let List = React.createClass({
             <button type="submit" className="btn btn-primary" onClick={this.handleClick}>New Ticket</button>
           </span>
         </form> 
-        <div className="input-group">
-          <span className="input-group-addon">Search</span>
-          <input type="text" name="search" className="form-control"/>
-        </div> 
         <hr />
 
         <UnorderList items={ticketArrays.currentTicket} user={this.props.user} title="Current Ticket"  />
         <UnorderList items={ticketArrays.inProduction} user={this.props.user} title="In Production" />
         <UnorderList items={ticketArrays.previewLink} user={this.props.user} title="Preview Link" />
+        <UnorderList items={ticketArrays.activated} user={this.props.user} title="Activated" />
         <UnorderList items={ticketArrays.waitingForCMFeedback} user={this.props.user} title="Waiting For CM FeedBack" />
         <UnorderList items={ticketArrays.inQA} user={this.props.user} title="In QA" />
         <UnorderList items={ticketArrays.closed} user={this.props.user} title="Closed" />
@@ -97,7 +113,7 @@ let UnorderList = React.createClass({
   render() {
     let list = this.props.items.map((ticket, index) => {
       return <li key={index}>
-        <p><Link to={"/users/" + this.props.user + "/tickets/" + ticket.ticketNumber}>{ticket.ticketNumber}</Link></p>
+        <p><Link to={"/users/" + this.props.user + "/tickets/" + ticket.ticketNumber}>{ticket.ticketNumber} - {moment(ticket.dueDate).format("l")}</Link></p>
         <p>&emsp;{ticket.title}</p>
       </li>
     });
