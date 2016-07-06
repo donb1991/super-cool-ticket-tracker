@@ -31,7 +31,7 @@ function fireBaseMethods() {
         deferred.reject(err.code);
       });
       return deferred.promise();
-    }, 
+    }, you
 
     logout: function() {
       ref.unauth();
@@ -73,7 +73,10 @@ function fireBaseMethods() {
         liveLink: false,
         closed: false,
         dueDate: "",
-        createdAt: moment().toISOString()
+        createdAt: moment().toISOString(),
+        audience: "",
+        segment: "",
+        reqestedBy: ""
       }
       this.endTimeSegement().done(function() {
         firebase.database().ref("/users/" + user).update({currentTicket: ticketNumber});

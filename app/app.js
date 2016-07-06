@@ -46,20 +46,19 @@ let App = React.createClass({
   },
 
   updateLocation(url, location) {
-     this.setState({location: location});
+    this.setState({location: location});
   },
-
   render() {
 
     let navOptions;
     if(this.state.user) {
       navOptions = (
-        <ul className="nav navbar-nav" style={{paddingRight: 10 + "px"}}>
+        <ul className="nav navbar-nav" style={{paddingRight: 0, marginRight: 0}}>
           <li><a onClick={this.logout}>Log Out</a></li>
         </ul>);
     } else {
       navOptions = (
-        <ul className="nav navbar-nav" style={{paddingRight: 10 + "px"}}>
+        <ul className="nav navbar-nav" style={{paddingRight: 0, marginRight: 0}}>
           <li className="pull-left"><a href="#/login" >Login</a></li>
           <li className="pull-right"><a href="#/signup">Sign up</a></li>
         </ul>

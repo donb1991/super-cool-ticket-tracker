@@ -25,7 +25,10 @@ let List = React.createClass({
         liveLink: false,
         closed: false,
         dueDate: "",
-        createdAt: moment().toISOString()
+        createdAt: moment().toISOString(),
+        audience: "",
+        segment: "",
+        reqestedBy: ""
       }
       fireBaseMethods.createTicket(this.props.newTicket);
       this.props.updateCurrentTicket(this.props.newTicket);

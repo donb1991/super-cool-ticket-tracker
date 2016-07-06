@@ -21,6 +21,9 @@ let Edit = React.createClass({
         closed: false,
         dueDate: "",
         createdAt: moment().toISOString(),
+        audience: "",
+        segment: "",
+        reqestedBy: ""
       }, 
       currentTicket: ''
     }
@@ -107,6 +110,28 @@ let Edit = React.createClass({
         </div>
         <label for="title">Title</label>
         <input type="text" id="title" className="form-control" name="title" placeholder="Title" value={this.props.ticket.title} onChange={this.handleChange}/>
+        <label for="audience">Audience</label>
+        <select type="text" id="audience" className="form-control" name="audience" placeholder="audience" value={this.props.ticket.audience} onChange={this.handleChange}>
+          <option value="">Select A Audience</option>
+          <option value="consumer">Consumer</option>
+          <option value="corporate">Corporate</option>
+          <option value="distributor">Distributor</option>
+          <option value="education">Education</option>
+          <option value="embeddedDeveloper">Embedded Developer</option>
+          <option value="embeddedEndUser">Embedded End User</option>
+          <option value="4">IoT</option>
+          <option value="ITDecisionMaker">IT Decision Maker</option>
+          <option value="legal">Legal</option>
+          <option value="mobile">Mobile</option>
+          <option value="performace">Performace</option>
+          <option value="privacy">Privacy</option>
+          <option value="products">Products</option>
+          <option value="reseller">Reseller</option>
+          <option value="software">Software</option>
+          <option value="technology">Technology</option>
+        </select>
+        <label for="requestBy">Request By</label>
+        <input type="text" id="requestBy" className="form-control" name="requestBy" placeholder="Request By" value={this.props.ticket.requestBy} onChange={this.handleChange}/>
         <label for="notes">Notes</label>
         <textarea id="notes" rows="10" name="notes" className="form-control" value={this.props.ticket.notes} onChange={this.handleChange}></textarea>
         <label for="task">Task</label>
